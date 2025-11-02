@@ -1,0 +1,16 @@
+/* Write your code here: */
+h1,h2{  /*one can use two selectors at once*/
+    color: blueviolet;
+}
+.box>.done{ /* This comes in handy when you have several items which have the same class but you wanna change a particular.But they should always be parent and child .*/
+    color: firebrick;
+}
+.box ul{   /*it should be a decendant*/
+    color: blue;
+}
+li.done{    /* Chaining method is good when you are trying to hold a specific elemnt*/
+    color: seagreen;
+}
+ul p.done{/* Combining selectors*/
+    font-size: 0.5rem;
+}
