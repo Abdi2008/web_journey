@@ -38,10 +38,11 @@ footer {
 footer{
   clear: both;
 }
-@media (min-width:380px) and (max-width:700px) {
+@media (max-width:700px) {
   .card{
     display: block;
     width: 100%;
+    text-align: justify;
   }
   h1{
     text-align: center;
