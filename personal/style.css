@@ -15,10 +15,33 @@ img{
 }
 .container{
     display: flex;
-    /* flex-basis: 30px; */
-    /* justify-content: space-between; */
+    gap: 30px;
 }
-.list{
+.lists{
+    display: flex;
+    gap: 30px;
     margin-top: 30px;
-    flex-basis: 30px;
+    text-align: right;
+    margin-left: 400px;
+}
+.lists a{
+    font-family: Helvetica;
+    text-align: right;
+}
+.container2{
+    display: flex;
+    gap: 10px;
+}
+.center img {
+    width: 400px;
+    height: 350px;
+    border: solid 3px gray;
+}
+.world{
+    text-align: center;
+    color: crimson;
+     border: solid 3px gray;
+}
+.world:hover{
+    background-color: blueviolet;
 }
