@@ -23,11 +23,13 @@ img{
     gap: 30px;
     margin-top: 30px;
     text-align: right;
-    margin-left: 400px;   
+    margin-left: 400px; 
+      
 }
 .lists a{
     font-family: Helvetica;
     text-align: right;
+    color: #E67E22;
 }   /*END OF THE FIRST CONTAINER*/
 .container2{
     display: flex;
