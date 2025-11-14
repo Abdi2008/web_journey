@@ -28,7 +28,7 @@ img{
 .lists a{
     font-family: Helvetica;
     text-align: right;
-}
+}   /*END OF THE FIRST CONTAINER*/
 .container2{
     display: flex;
     gap: 10px;
@@ -36,13 +36,69 @@ img{
 .center img {
     width: 400px;
     height: 350px;
-    border: solid 3px gray;
+    border-radius: 200px;
+    /*border: solid 3px gray;*/
 }
 .world{
     text-align: center;
-    color: crimson;
+    color: #E67E22;
     border: solid 3px gray;
 }
 .world:hover{
-    background-color: blueviolet;
+    background-color: #628141;
+}   /*END OF THE SECOND CONTAINER*/
+.container3{
+    display: grid;
+    grid-template-columns: repeat(3,32%);
+    gap: 20px;
+    width: 100%;
+}
+.my-projects{
+    text-align: center;
+    font-weight: bolder;
+}
+#projects{
+    background-color: #EBD5AB;
+
+}
+.project-grid img{
+    float: left;
+    width: 150px;
+    height: 125px;
+    margin-right: 20px;
+}
+.project-grid{
+    background-color: rgb(117, 117, 91);
+    border-radius: 10px;
+    border: none;
+}
+.project-grid h3{
+    color: #EBD5AB;
+    text-align: center;
+}
+/*END OF THE THIRD CONTAINER*/
+.container4{
+    display: flex;
+    /* margin-left: 15%; */
+    /* width: 75%; */
+    gap: 40px;
+    justify-content: center;
+
+    /* justify-content: space-between; */
+}
+#contact{
+    background-color: #8BAE66;
+}
+.contact{
+    text-align: center;
+    font-weight: 700;
+    border: 5px solid #E67E22;
+}
+.contact-card{
+    margin-bottom: 15px;
+}
+ /*END OF CONTAINER 4*/
+footer{
+    text-align: right;
+    margin-right: 5px;
 }
