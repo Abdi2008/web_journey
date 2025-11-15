@@ -1,0 +1,18 @@
+#container{
+    display: grid;
+    grid-template-columns: repeat(2,50%);
+    height: 400px;
+}
+.formss{
+    background-color: antiquewhite;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    height: 80%;
+}
+.right{
+    background-color: rgb(117, 79, 79);
+    height: 80%;
+}
