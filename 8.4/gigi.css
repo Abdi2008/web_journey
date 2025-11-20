@@ -5,9 +5,16 @@
     background-color: beige;
 }
 .first{
-    /* display: inline-block; */
+    display: flex;
     height: 10%;
     width: 100%;
+    gap: 20px;
+}
+.first li{
+    font-weight: bolder;
+    margin-left: auto;
+    margin-top: 20px;
+    font-size: 15pt;
 }
 .logo{
     float: left;
@@ -55,14 +62,18 @@ h2{
 .freights{
     width: 300px;
     float: left;
-    /* margin-right:10px;  */
+    margin-right:10px; 
     height: 200px;
+    border-radius: 200px;
+    border: none;
 }
 .logistics{
     float: left;
     width: 300px;
-    /* margin-right: 10px; */
+    margin-right: 10px;
     height: 200px;
+    border-radius: 150px;
+    border: none;
 }
 p{
     margin: 0%;
