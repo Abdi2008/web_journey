@@ -104,3 +104,20 @@ footer{
     text-align: right;
     margin-right: 5px;
 }
+@media  (max-width :500px){
+    .container{
+        display: block;
+        width: 100%;
+    }
+    .title > ul{
+        text-align: center;
+    }
+    .container2{
+        display: block;
+        width: 100%;
+    }
+    .container3{
+        display: block;
+        width: 100%;
+    }
+}
