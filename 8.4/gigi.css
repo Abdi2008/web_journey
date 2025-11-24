@@ -1,7 +1,8 @@
 .main{
     display: flex;
     gap: 10px;
-}body{
+}
+body{
     background-color: beige;
 }
 .first{
@@ -10,15 +11,17 @@
     width: 100%;
     gap: 20px;
 }
-.first li{
+.first > li{
     font-weight: bolder;
-    margin-left: auto;
     margin-top: 20px;
     font-size: 15pt;
+    margin-left: auto;
+    list-style-type: none;
 }
 .logo{
-    float: left;
-    width: 60px;
+    width: 30px;
+    margin-top: 20px;
+    height: 40px;
 }
 h1{
     margin-left: 100px;
@@ -33,8 +36,8 @@ h2{
     width: 50%;
 }
 .h2 :hover{
-    background-color: black;
-    color: aliceblue;
+    background-color: rgb(230, 224, 224);
+    color: rgb(20, 108, 185);
     transition: 1s ease-in-out;
 }
 .value{
