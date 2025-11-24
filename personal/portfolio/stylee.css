@@ -1,0 +1,37 @@
+body{
+    background-color: #FFF7DD;
+    padding: 0;
+    margin: 0;
+    color: #80A1BA;
+}
+h1{
+    text-align: center;
+    margin-top: 50px;
+}
+.container{
+    display: flex;
+    gap: 20px;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+}
+.card{
+    width: 30%;
+    height: 300px;
+}
+.professional{
+    width: 35%;
+    border: 2px solid black;
+}
+.master{
+    margin-left: 40px;
+    border: 2px solid gray;
+    /* align-content: center; */
+}
+.basic{
+    border: 2px solid gray;
+}
+
+.card > button{
+    text-align: center;
+}
