@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="120" height="64" viewBox="0 0 120 64" xmlns="http://www.w3.org/2000/svg" role="img">
+  <rect width="120" height="64" rx="8" fill="#ffffff"/>
+  <g transform="translate(12,10)" fill="#0b0b0b" font-family="Arial, Helvetica, sans-serif" font-weight="700">
+    <text x="0" y="34" font-size="28" fill="#ff6a00">A</text>
+    <text x="28" y="34" font-size="20">ACME</text>
+  </g>
+</svg>

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dashboard - JOBSO</title>
+  <link rel="stylesheet" href="/JOBSO/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-row">
+      <h1><a class="logo" href="/JOBSO/frontend/index.html"><img class="logo" src="/JOBSO/assets/logo.png" alt="JOBSO logo"></a></h1>
+
+      <button id="navToggle" class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mainNav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="mainNav" class="main-nav">
+        <a href="/JOBSO/frontend/index.html">Home</a>
+        <a href="/JOBSO/frontend/jobs.html">Jobs</a>
+        <a href="/JOBSO/frontend/saved.html">Saved <span id="savedCount" class="saved-count">0</span></a>
+        <a href="/JOBSO/frontend/post_job.html">Post Job</a>
+        <a href="/JOBSO/frontend/dashboard.html">Dashboard</a>
+        <a href="/JOBSO/frontend/about.html">About</a>
+        <a href="/JOBSO/frontend/login.html">Login</a>
+        <a href="/JOBSO/frontend/register.html">Register</a>
+      </nav>
+
+      <div id="authArea"></div>
+    </div>
+  </header>
+  <main class="container">
+    <div id="dashboardRoot">Loading…</div>
+  </main>
+  <script type="module">
+    // Render role-specific dashboard: employer sees 'My Jobs' (existing behavior),
+    // candidates see profile + recommended jobs.
+    async function renderEmployerDashboard(root, user){
+      root.innerHTML = '<h2>Your Jobs</h2><div id="jobs">Loading…</div>';
+      const c = document.getElementById('jobs');
+      try{
+        const res = await fetch('/JOBSO/api/jobs.php?mine=1',{credentials:'same-origin'});
+        const j = await res.json();
+        if (!res.ok) { c.innerText = j.error || 'Error'; return }
+        c.innerHTML = '';
+        if (!j.jobs.length) { c.innerHTML = '<p>No jobs posted yet.</p>'; return }
+        const ul = document.createElement('ul'); ul.className='job-list';
+        for (const job of j.jobs){
+          const li = document.createElement('li');
+          const a = document.createElement('a'); a.href = `/JOBSO/frontend/view_job.html?id=${job.id}`; a.textContent = job.title; a.className='job-title';
+          li.appendChild(a);
+          const meta = document.createElement('div'); meta.className='job-meta'; meta.textContent = `${job.company} · ${job.location || ''} · ${job.is_active==1? 'Active':'Closed'}`;
+          li.appendChild(meta);
+          const actions = document.createElement('div');
+          // Edit
+          const edit = document.createElement('a'); edit.href = `/JOBSO/frontend/edit_job.html?id=${job.id}`; edit.textContent = 'Edit'; edit.style.marginRight='8px';
+          actions.appendChild(edit);
+          // Applicants link (will be updated with count)
+          const appsBtn = document.createElement('a'); appsBtn.href = `/JOBSO/frontend/applicants.html?job_id=${job.id}`; appsBtn.textContent = 'Applicants'; appsBtn.style.marginRight='8px'; appsBtn.className='button mini';
+          actions.appendChild(appsBtn);
+          // Toggle active
+          const toggle = document.createElement('button'); toggle.textContent = job.is_active==1 ? 'Close' : 'Reopen';
+          toggle.addEventListener('click', async ()=>{
+            const newState = job.is_active==1 ? 0 : 1;
+            const r = await fetch('/JOBSO/api/job_update.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:job.id,is_active:newState})});
+            const rr = await r.json();
+            if (r.ok) renderEmployerDashboard(root, user); else alert(rr.error||'Failed');
+          });
+          actions.appendChild(toggle);
+          // Delete
+          const del = document.createElement('button'); del.textContent='Delete'; del.style.marginLeft='8px';
+          del.addEventListener('click', async ()=>{
+            if (!confirm('Delete?')) return;
+            const r = await fetch(`/JOBSO/api/jobs.php?id=${job.id}`,{method:'DELETE',credentials:'same-origin'});
+            const rr = await r.json();
+            if (r.ok) renderEmployerDashboard(root, user); else alert(rr.error||'Failed');
+          });
+          actions.appendChild(del);
+          li.appendChild(actions);
+          ul.appendChild(li);
+
+          // fetch applications count asynchronously and update appsBtn text
+          (async function(btn, jid){
+            try{
+              const r = await fetch(`/JOBSO/api/applications.php?job_id=${encodeURIComponent(jid)}`,{credentials:'same-origin'});
+              const ct = r.headers.get('content-type') || '';
+              const data = ct.includes('application/json') ? await r.json() : null;
+              if (r.ok && data && Array.isArray(data.applications)){
+                btn.textContent = `Applicants (${data.applications.length})`;
+              } else if (data && data.error){
+                btn.textContent = 'Applicants (0)';
+              }
+            }catch(e){ console.error(e); /* keep label */ }
+          })(appsBtn, job.id);
+        }
+        c.appendChild(ul);
+      }catch(e){ c.innerText = 'Error'; console.error(e) }
+    }
+
+    async function renderCandidateDashboard(root, user){
+      root.innerHTML = `
+        <section class="card">
+          <h2>Welcome, ${user.name ? escapeHtml(user.name) : escapeHtml(user.email)}</h2>
+          <p>Account type: <strong>${escapeHtml(user.role || 'candidate')}</strong></p>
+        </section>
+        <section style="margin-top:16px">
+          <h3>Recommended Jobs</h3>
+          <div id="recommended">Loading…</div>
+        </section>
+      `;
+      const rec = document.getElementById('recommended');
+      try{
+        const res = await fetch('/JOBSO/api/jobs.php',{credentials:'same-origin'});
+        const j = await res.json();
+        if (!res.ok) { rec.innerText = j.error || 'Error'; return }
+        rec.innerHTML = '';
+        if (!j.jobs.length) { rec.innerHTML = '<p>No jobs available.</p>'; return }
+        const grid = document.createElement('div'); grid.className='jobs-grid';
+        for (const job of j.jobs.slice(0,12)){
+          const card = document.createElement('div'); card.className='card job-card';
+          const title = document.createElement('a'); title.href = `/JOBSO/frontend/view_job.html?id=${job.id}`; title.textContent = job.title; title.className='job-title';
+          card.appendChild(title);
+          const meta = document.createElement('div'); meta.className='job-meta'; meta.textContent = `${job.company} · ${job.location || ''}`;
+          card.appendChild(meta);
+          const btn = document.createElement('a'); btn.href = `/JOBSO/frontend/view_job.html?id=${job.id}`; btn.className='button'; btn.style.marginTop='8px'; btn.textContent = 'View & Apply';
+          card.appendChild(btn);
+          grid.appendChild(card);
+        }
+        rec.appendChild(grid);
+      }catch(e){ rec.innerText = 'Error loading recommendations'; console.error(e) }
+    }
+
+    function escapeHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+    // Decide which dashboard to show by asking /api/me.php
+    (async function(){
+      const root = document.getElementById('dashboardRoot');
+      try{
+        const res = await fetch('/JOBSO/api/me.php',{credentials:'same-origin'});
+        const ct = res.headers.get('content-type') || '';
+        let json = null;
+        if (ct.includes('application/json')) json = await res.json();
+        if (!res.ok) { root.innerText = (json && json.error) ? json.error : 'Error fetching user'; return }
+        const user = json && json.user ? json.user : null;
+        if (!user) { root.innerHTML = '<p>Please <a href="/JOBSO/frontend/login.html">login</a> to view your dashboard.</p>'; return }
+        if (user.role === 'employer' || user.role === 'admin') {
+          renderEmployerDashboard(root, user);
+        } else {
+          renderCandidateDashboard(root, user);
+        }
+      }catch(e){ console.error(e); document.getElementById('dashboardRoot').innerText = 'Error loading dashboard' }
+    })();
+  </script>
+  <script type="module" src="./js/auth.js"></script>
+  <script type="module" src="./js/saved-ui.js"></script>
+  <script src="./js/nav.js" defer></script>
+</body>
+</html>

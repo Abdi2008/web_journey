@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>JOBSO - Home</title>
+  <link rel="stylesheet" href="/JOBSO/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-row">
+      <h1><a class="logo" href="/JOBSO/frontend/index.html"><img class="logo" src="/JOBSO/assets/logo.png" alt="JOBSO logo"></a></h1>
+
+      <button id="navToggle" class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mainNav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="mainNav" class="main-nav">
+        <a href="/JOBSO/frontend/index.html">Home</a>
+        <a href="/JOBSO/frontend/jobs.html">Jobs</a>
+        <a href="/JOBSO/frontend/post_job.html">Post Job</a>
+        <a href="/JOBSO/frontend/dashboard.html">Dashboard</a>
+        <a href="/JOBSO/frontend/about.html">About</a>
+      </nav>
+
+      <div id="authArea"></div>
+    </div>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="container inner">
+        <div class="left">
+          <h2>Find your next great job — fast.</h2>
+          <p>JOBSO connects talented professionals with companies hiring today. Browse hand-picked listings, apply quickly, or post a job if you're hiring.</p>
+          <div class="cta">
+            <a class="button" href="/JOBSO/frontend/register.html">Get started — it's free</a>
+            <a style="margin-left:12px;color:var(--accent)" href="/JOBSO/frontend/post_job.html">Post a job</a>
+          </div>
+        </div>
+        <div class="right">
+          <img src="/JOBSO/assets/Jobs.jpg" alt="Illustration showing job cards and applicants" />
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <h3>Featured companies</h3>
+      <div class="companies card-grid cols-3" id="companies">
+        <div class="company card" tabindex="0"><img src="/JOBSO/assets/companies/acme.svg" alt="Acme"></div>
+        <div class="company card" tabindex="0"><img src="/JOBSO/assets/companies/nimbus.svg" alt="Nimbus"></div>
+        <div class="company card" tabindex="0"><img src="/JOBSO/assets/companies/helix.svg" alt="Helix"></div>
+        <div class="company card" tabindex="0"><img src="/JOBSO/assets/companies/orbit.svg" alt="Orbit"></div>
+        <div class="company card" tabindex="0"><img src="/JOBSO/assets/companies/lambda.svg" alt="Lambda"></div>
+      </div>
+
+      <h3 style="margin-top:18px">Top Categories</h3>
+      <div class="top-categories-bg">
+        <div id="categories" class="card-grid categories-grid">
+          <a class="category card" href="/JOBSO/frontend/jobs.html?q=Engineering" data-key="engineering">
+            <div class="cat-title">Engineering</div>
+            <div class="cat-count">–</div>
+          </a>
+          <a class="category card" href="/JOBSO/frontend/jobs.html?q=Design" data-key="design">
+            <div class="cat-title">Design</div>
+            <div class="cat-count">–</div>
+          </a>
+          <a class="category card" href="/JOBSO/frontend/jobs.html?q=Product" data-key="product">
+            <div class="cat-title">Product</div>
+            <div class="cat-count">–</div>
+          </a>
+          <a class="category card" href="/JOBSO/frontend/jobs.html?q=Marketing" data-key="marketing">
+            <div class="cat-title">Marketing</div>
+            <div class="cat-count">–</div>
+          </a>
+          <a class="category card" href="/JOBSO/frontend/jobs.html?q=Sales" data-key="sales">
+            <div class="cat-title">Sales</div>
+            <div class="cat-count">–</div>
+          </a>
+          <a class="category card" href="/JOBSO/frontend/jobs.html?q=DevOps" data-key="devops">
+            <div class="cat-title">DevOps</div>
+            <div class="cat-count">–</div>
+          </a>
+        </div>
+      </div>
+
+      <h3>Why JOBSO</h3>
+      <div class="features card-grid cols-3">
+        <div class="feature card">
+          <h3>Curated listings</h3>
+          <p>We surface the best remote and local roles from verified employers.</p>
+        </div>
+        <div class="feature card">
+          <h3>Fast apply</h3>
+          <p>Apply in one click and track your submissions from your dashboard.</p>
+        </div>
+        <div class="feature card">
+          <h3>Free for job seekers</h3>
+          <p>Create a profile, upload a resume, and apply to jobs for free.</p>
+        </div>
+      </div>
+
+      <!-- New sections: How it works, Testimonials, Newsletter -->
+      <section class="how-it-works" style="margin-top:28px">
+        <h3>How it works</h3>
+        <div class="how-steps card-grid cols-3">
+          <div class="step card">
+            <h4>1. Create a profile</h4>
+            <p>Sign up as a candidate or employer and complete your profile — it only takes a minute.</p>
+          </div>
+          <div class="step card">
+            <h4>2. Browse or post jobs</h4>
+            <p>Find jobs that match your skills, or post a listing and get applications quickly.</p>
+          </div>
+          <div class="step card">
+            <h4>3. Connect and hire</h4>
+            <p>Chat with applicants, schedule interviews, and hire the right person for your team.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="testimonials" style="margin-top:28px">
+        <h3>What people say</h3>
+        <div class="testimonials-list card-grid cols-2">
+          <div class="testimonial card">
+            <p>"I found my current role in under a week — the listings are high-quality and the process was fast."</p>
+            <div class="cite">— Priya, Product Manager</div>
+          </div>
+          <div class="testimonial card">
+            <p>"As a startup, posting on JOBSO got us 30 applicants in 3 days. Great value for employers."</p>
+            <div class="cite">— Marcus, CTO, Nimbus Labs</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="newsletter" style="margin-top:28px">
+        <h3>Get job alerts</h3>
+        <p>Subscribe to receive curated job matches and hiring tips straight to your inbox.</p>
+        <form id="newsletterForm" class="newsletter-form card flat">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input type="email" name="email" placeholder="Your email" required style="flex:1;min-width:200px">
+            <button type="submit">Subscribe</button>
+          </div>
+        </form>
+      </section>
+
+      <div style="display:flex;gap:24px;align-items:start;margin-top:18px;">
+        <div style="flex:2">
+          <h3>Latest Jobs</h3>
+          <div id="jobs" class="jobs-grid">Loading…</div>
+        </div>
+        <aside style="flex:1">
+          <h3>Trending</h3>
+          <div id="trending" class="trending-list">Loading…</div>
+        </aside>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div>© JOBSO — Simple Job Portal</div>
+        <div><a href="#">About</a> · <a href="#">Privacy</a> · <a href="#">Contact</a></div>
+      </div>
+    </footer>
+  </main>
+
+  <script type="module">
+    import { loadJobs } from './js/app.js';
+    // load jobs into main grid and trending (first 5)
+    loadJobs(document.getElementById('jobs'), document.getElementById('trending'));
+  </script>
+  <script type="module" src="./js/animations.js" defer></script>
+  <script type="module" src="./js/auth.js"></script>
+  <script type="module" src="./js/saved-ui.js"></script>
+  <script type="module" src="./js/categories.js" defer></script>
+  <script src="./js/nav.js" defer></script>
+  <script type="module">
+    // Newsletter form handler: POST to API and show inline message
+    const form = document.getElementById('newsletterForm');
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const input = form.querySelector('input[name="email"]');
+      if (!input) return;
+      const email = input.value.trim();
+      if (!email) return;
+      const feedback = document.createElement('div');
+      feedback.style.marginTop = '8px';
+      try {
+        const res = await fetch('/JOBSO/api/newsletter.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+          credentials: 'same-origin'
+        });
+        const data = await (async () => {
+          const ct = res.headers.get('content-type') || '';
+          if (ct.includes('application/json')) return res.json();
+          return { success: false, error: await res.text() };
+        })();
+        if (data.success) {
+          feedback.textContent = data.message || 'Thanks — you are subscribed.';
+          feedback.style.color = 'green';
+          input.value = '';
+        } else {
+          feedback.textContent = data.error || 'Subscription failed';
+          feedback.style.color = 'crimson';
+        }
+      } catch (err) {
+        feedback.textContent = 'Network error';
+        feedback.style.color = 'crimson';
+        console.error(err);
+      }
+      form.appendChild(feedback);
+      setTimeout(() => feedback.remove(), 6000);
+    });
+  </script>
+</body>
+</html>

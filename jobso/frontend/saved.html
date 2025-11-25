@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Saved Jobs - JOBSO</title>
+  <link rel="stylesheet" href="/JOBSO/css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-row">
+      <h1><a class="logo" href="/JOBSO/frontend/index.html"><img class="logo" src="/JOBSO/assets/logo.png" alt="JOBSO logo"></a></h1>
+
+      <button id="navToggle" class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mainNav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="mainNav" class="main-nav">
+        <a href="/JOBSO/frontend/index.html">Home</a>
+        <a href="/JOBSO/frontend/jobs.html">Jobs</a>
+        <a href="/JOBSO/frontend/post_job.html">Post Job</a>
+        <a href="/JOBSO/frontend/dashboard.html">Dashboard</a>
+        <a href="/JOBSO/frontend/about.html">About</a>
+      </nav>
+
+      <div id="authArea"></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2>Saved jobs</h2>
+    <div id="savedList">Loading…</div>
+  </main>
+
+  <script type="module">
+    import { listSaved, unsaveJob } from './js/jobs-actions.js';
+    async function loadSaved(){
+      const c = document.getElementById('savedList');
+      c.innerHTML = 'Loading…';
+      try{
+        const res = await listSaved();
+        const rows = res.saved || [];
+        if (!rows.length) { c.innerHTML = '<p>No saved jobs yet.</p>'; return }
+        const ul = document.createElement('ul'); ul.className = 'job-list';
+        for (const s of rows){
+          const li = document.createElement('li');
+          li.innerHTML = `<a class='job-title' href='/JOBSO/frontend/view_job.html?id=${s.job_id}'>${s.title}</a><div class='job-meta'>${s.company} · saved at ${s.saved_at}</div>`;
+          const rm = document.createElement('button'); rm.textContent='Remove'; rm.style.marginLeft='12px';
+          rm.addEventListener('click', async ()=>{
+            try{
+              await unsaveJob(s.job_id);
+              loadSaved();
+            }catch(e){ alert(e.error||'Failed'); }
+          });
+          li.appendChild(rm);
+          ul.appendChild(li);
+        }
+        c.innerHTML=''; c.appendChild(ul);
+      }catch(e){ c.innerHTML = '<p>Unable to load saved jobs.</p>'; console.error(e) }
+    }
+    loadSaved();
+  </script>
+  <script type="module" src="./js/auth.js"></script>
+  <script type="module" src="./js/saved-ui.js"></script>
+  <script src="./js/nav.js" defer></script>
+</body>
+</html>

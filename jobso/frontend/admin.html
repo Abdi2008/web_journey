@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — User Management</title>
+  <link rel="stylesheet" href="/JOBSO/css/style.css">
+  <style>
+    .user-row{display:flex;align-items:center;gap:12px;padding:8px;border-bottom:1px solid #eee}
+    .user-row .actions{margin-left:auto}
+    .role-select{padding:4px}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-row">
+      <h1><a class="logo" href="/JOBSO/frontend/index.html"><img class="logo" src="/JOBSO/assets/logo.png" alt="JOBSO logo"></a></h1>
+
+      <button id="navToggle" class="hamburger" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mainNav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav id="mainNav" class="main-nav">
+        <a href="/JOBSO/frontend/index.html">Home</a>
+        <a href="/JOBSO/frontend/jobs.html">Jobs</a>
+        <a href="/JOBSO/frontend/post_job.html">Post Job</a>
+        <a href="/JOBSO/frontend/dashboard.html">Dashboard</a>
+        <a href="/JOBSO/frontend/about.html">About</a>
+        <a href="/JOBSO/frontend/admin.html">Admin</a>
+      </nav>
+
+      <div id="authArea"></div>
+    </div>
+  </header>
+  <main class="container">
+    <h2>Admin Dashboard</h2>
+    <section class="dashboard-analytics" style="margin-bottom:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;">
+      <div class="card analytics-card" id="admin-users-summary"><h3>Users</h3><div class="stat-value" id="stat-users">–</div></div>
+      <div class="card analytics-card" id="admin-jobs-summary"><h3>Jobs</h3><div class="stat-value" id="stat-jobs">–</div></div>
+      <div class="card analytics-card" id="admin-apps-summary"><h3>Applications</h3><div class="stat-value" id="stat-apps">–</div></div>
+      <div class="card analytics-card" id="admin-news-summary"><h3>Newsletter</h3><div class="stat-value" id="stat-news">–</div></div>
+    </section>
+    <nav style="margin-bottom:18px">
+      <button class="tab-btn" data-tab="users">Users</button>
+      <button class="tab-btn" data-tab="jobs">Jobs</button>
+      <button class="tab-btn" data-tab="apps">Applications</button>
+      <button class="tab-btn" data-tab="news">Newsletter</button>
+    </nav>
+    <div id="adminTabs">
+      <div id="tab-users" class="tab-content">Loading…</div>
+      <div id="tab-jobs" class="tab-content" style="display:none">Loading…</div>
+      <div id="tab-apps" class="tab-content" style="display:none">Loading…</div>
+      <div id="tab-news" class="tab-content" style="display:none">Loading…</div>
+    </div>
+  </main>
+  <script type="module">
+    import { renderAuth } from './js/auth.js';
+    renderAuth();
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.tab-content').forEach(tc => tc.style.display = 'none');
+        document.getElementById('tab-' + btn.dataset.tab).style.display = '';
+      };
+    });
+    // Load summary stats
+    async function loadSummary() {
+      const [users, jobs, apps, news] = await Promise.all([
+        fetch('/JOBSO/api/admin_users.php',{credentials:'same-origin'}).then(r=>r.json()),
+        fetch('/JOBSO/api/jobs.php',{credentials:'same-origin'}).then(r=>r.json()),
+        fetch('/JOBSO/api/applications.php',{credentials:'same-origin'}).then(r=>r.json()),
+        fetch('/JOBSO/api/newsletter.php',{credentials:'same-origin'}).then(r=>r.json())
+      ]);
+      document.getElementById('stat-users').textContent = users.users ? users.users.length : '–';
+      document.getElementById('stat-jobs').textContent = jobs.jobs ? jobs.jobs.length : '–';
+      document.getElementById('stat-apps').textContent = apps.applications ? apps.applications.length : '–';
+      document.getElementById('stat-news').textContent = news.subscribers ? news.subscribers.length : '–';
+    }
+    loadSummary();
+    // Load users tab
+    async function loadUsers(){
+      const c = document.getElementById('tab-users');
+      c.innerHTML = 'Loading…';
+      try{
+        const res = await fetch('/JOBSO/api/admin_users.php',{credentials:'same-origin'});
+        const j = await res.json();
+        if (!res.ok) { c.innerText = j.error || 'Error'; return }
+        c.innerHTML = '';
+        if (!j.users.length) { c.innerHTML = '<p>No users found.</p>'; return }
+        for (const u of j.users){
+          const div = document.createElement('div'); div.className='user-row';
+          const info = document.createElement('div'); info.innerHTML = `<strong>${u.name}</strong> <span style='color:#666'>${u.email}</span>`;
+          div.appendChild(info);
+          const roleSel = document.createElement('select'); roleSel.className='role-select';
+          ['candidate','employer','admin'].forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; if (u.role===r) o.selected=true; roleSel.appendChild(o)});
+          div.appendChild(roleSel);
+          const actions = document.createElement('div'); actions.className='actions';
+          const save = document.createElement('button'); save.textContent='Save';
+          save.addEventListener('click', async ()=>{
+            save.disabled = true; try{
+              const rsp = await fetch('/JOBSO/api/admin_users.php',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:u.id,role:roleSel.value})});
+              const rj = await rsp.json();
+              if (!rsp.ok) alert(rj.error || 'Failed'); else loadUsers();
+            }catch(e){ alert('Error'); }
+            save.disabled=false;
+          });
+          const del = document.createElement('button'); del.textContent='Delete'; del.style.marginLeft='8px';
+          del.addEventListener('click', async ()=>{
+            if (!confirm('Delete this user?')) return;
+            try{
+              const rsp = await fetch('/JOBSO/api/admin_users.php?id='+u.id,{method:'DELETE',credentials:'same-origin'});
+              const rj = await rsp.json();
+              if (!rsp.ok) alert(rj.error || 'Failed'); else loadUsers();
+            }catch(e){ alert('Error'); }
+          });
+          actions.appendChild(save); actions.appendChild(del);
+          div.appendChild(actions);
+          c.appendChild(div);
+        }
+      }catch(e){ c.innerText = 'Error loading users'; console.error(e) }
+    }
+    // Load jobs tab
+    async function loadJobs(){
+      const c = document.getElementById('tab-jobs');
+      c.innerHTML = 'Loading…';
+      try{
+        const res = await fetch('/JOBSO/api/jobs.php',{credentials:'same-origin'});
+        const j = await res.json();
+        if (!res.ok) { c.innerText = j.error || 'Error'; return }
+        c.innerHTML = '';
+        if (!j.jobs.length) { c.innerHTML = '<p>No jobs found.</p>'; return }
+        for (const job of j.jobs){
+          const div = document.createElement('div'); div.className='user-row';
+          div.innerHTML = `<strong>${job.title}</strong> <span style='color:#666'>${job.company} · ${job.location || ''}</span> <span style='margin-left:auto;color:#888'>${job.is_active==1?'Active':'Closed'}</span>`;
+          const actions = document.createElement('div'); actions.className='actions';
+          const edit = document.createElement('a'); edit.textContent='Edit'; edit.href=`/JOBSO/frontend/edit_job.html?id=${job.id}`; edit.className='button mini';
+          actions.appendChild(edit);
+          const del = document.createElement('button'); del.textContent='Delete'; del.style.marginLeft='8px';
+          del.addEventListener('click', async ()=>{
+            if (!confirm('Delete this job?')) return;
+            try{
+              const rsp = await fetch('/JOBSO/api/jobs.php?id='+job.id,{method:'DELETE',credentials:'same-origin'});
+              const rj = await rsp.json();
+              if (!rsp.ok) alert(rj.error || 'Failed'); else loadJobs();
+            }catch(e){ alert('Error'); }
+          });
+          actions.appendChild(del);
+          div.appendChild(actions);
+          c.appendChild(div);
+        }
+      }catch(e){ c.innerText = 'Error loading jobs'; console.error(e) }
+    }
+    // Load applications tab
+    async function loadApps(){
+      const c = document.getElementById('tab-apps');
+      c.innerHTML = 'Loading…';
+      try{
+        const res = await fetch('/JOBSO/api/applications.php',{credentials:'same-origin'});
+        const j = await res.json();
+        if (!res.ok) { c.innerText = j.error || 'Error'; return }
+        c.innerHTML = '';
+        if (!j.applications.length) { c.innerHTML = '<p>No applications found.</p>'; return }
+        for (const app of j.applications){
+          const div = document.createElement('div'); div.className='user-row';
+          div.innerHTML = `<strong>${app.job_id}</strong> <span style='color:#666'>${app.user_id}</span> <span style='margin-left:auto;color:#888'>${app.applied_at}</span>`;
+          if (app.resume_path) div.innerHTML += ` <a href='/${app.resume_path}' target='_blank' class='button mini'>Resume</a>`;
+          c.appendChild(div);
+        }
+      }catch(e){ c.innerText = 'Error loading applications'; console.error(e) }
+    }
+    // Load newsletter tab
+    async function loadNews(){
+      const c = document.getElementById('tab-news');
+      c.innerHTML = 'Loading…';
+      try{
+        const res = await fetch('/JOBSO/api/newsletter.php',{credentials:'same-origin'});
+        const j = await res.json();
+        if (!res.ok) { c.innerText = j.error || 'Error'; return }
+        c.innerHTML = '';
+        if (!j.subscribers.length) { c.innerHTML = '<p>No subscribers found.</p>'; return }
+        for (const sub of j.subscribers){
+          const div = document.createElement('div'); div.className='user-row';
+          div.innerHTML = `<span>${sub.email}</span> <span style='margin-left:auto;color:#888'>${sub.subscribed_at}</span>`;
+          c.appendChild(div);
+        }
+      }catch(e){ c.innerText = 'Error loading newsletter'; console.error(e) }
+    }
+    // Initial load
+    loadUsers();
+    loadJobs();
+    loadApps();
+    loadNews();
+  </script>
+  <script type="module" src="./js/saved-ui.js"></script>
+  <script src="./js/nav.js" defer></script>
+</body>
+</html>
