@@ -4,6 +4,11 @@ body{
     margin: 0;
     color: #80A1BA;
 }
+#cards{
+    background-color: hwb(0 7% 71%);
+    color: #FFF7DD;
+    
+}
 h1{
     text-align: center;
     margin-top: 50px;
@@ -11,13 +16,19 @@ h1{
 .container{
     display: flex;
     gap: 20px;
-    height: 100vh;
+    height: 325px;
+    width: 100%;
     align-items: center;
-    justify-content: center;
+   
 }
 .card{
     width: 30%;
     height: 300px;
+    text-align: center; /* You align the text in the middle*/
+}
+ul >li{
+    list-style:inside;  /*This been a life changer , you also take the dashes or the decimal with it nearby*/
+    margin-bottom: 15px;
 }
 .professional{
     width: 35%;
@@ -31,7 +42,6 @@ h1{
 .basic{
     border: 2px solid gray;
 }
-
-.card > button{
-    text-align: center;
+.btn{
+    margin-top: 15px;
 }
