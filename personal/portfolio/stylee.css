@@ -10,8 +10,14 @@ body{
     
 }
 h1{
+    width: 50%;
     text-align: center;
+    margin-left: 25%;
     margin-top: 50px;
+    font-size: 30pt;
+    border: 2px solid gray;
+    border-radius: 100px;
+    
 }
 .container{
     display: flex;
