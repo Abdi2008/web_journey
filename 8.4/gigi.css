@@ -3,7 +3,7 @@
     gap: 10px;
 }
 body{
-    background-color: beige;
+    background-color: rgb(192, 192, 98);
 }
 .first{
     display: flex;
